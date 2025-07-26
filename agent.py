@@ -4,6 +4,8 @@ from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel, GoogleModelSettings
 from typing import Optional
 
+# https://www.kaggle.com/datasets/utsavdey1410/food-nutrition-dataset
+
 # Initialize model
 provider = GoogleProvider(api_key='AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc')
 model = GoogleModel(model_name='gemini-1.5-flash', provider=provider)
