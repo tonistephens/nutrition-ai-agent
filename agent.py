@@ -1,13 +1,11 @@
 import os
 import pandas as pd
 import glob
-import re
 from pydantic_ai import Agent
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel
-from typing import List, Dict
 from kaggle.api.kaggle_api_extended import KaggleApi
-from thefuzz import fuzz
+from tools import KnowledgeBase
 
 # Initialize model
 provider = GoogleProvider(api_key='AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc')
@@ -31,32 +29,6 @@ if not dl_flag:
 csv_files = sorted(glob.glob(f"{dataset_dir}/FINAL FOOD DATASET/FOOD-DATA-GROUP*.csv"))
 df_list = [pd.read_csv(file) for file in csv_files]
 df = pd.concat(df_list, ignore_index=True)
-
-SET_TOKEN = 80
-
-def normalise_text(text: str) -> str:
-    """Lowercase and remove punctuation"""
-    return re.sub(r"[^\w\s]","",text.lower())
-
-# Initialise knowledge base
-class KnowledgeBase:
-    def __init__(self, dataframe: pd.DataFrame):
-        self.df = dataframe
-
-    def search_foods(self, query: str) -> List[Dict]:
-        """Simple keyword search over food names and descriptions"""
-        query_keywords = normalise_text(query)
-        results = []
-
-        for _, row in self.df.iterrows():
-            description = normalise_text(str(row.get('food', '')))
-
-            score = fuzz.token_set_ratio(query_keywords, description)
-            if score >= SET_TOKEN:
-                results.append((score,row.to_dict()))
-
-        results.sort(key=lambda x: x[0], reverse=True)
-        return [item[1] for item in results[:5]]
     
 kb = KnowledgeBase(df)
 
