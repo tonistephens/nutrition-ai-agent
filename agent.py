@@ -5,18 +5,30 @@ from pydantic_ai.models.google import GoogleModel, GoogleModelSettings
 from typing import Optional
 from kaggle.api.kaggle_api_extended import KaggleApi
 import pandas as pd
-
-# https://www.kaggle.com/datasets/utsavdey1410/food-nutrition-dataset
+import glob
 
 # Initialize model
 provider = GoogleProvider(api_key='AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc')
 model = GoogleModel(model_name='gemini-1.5-flash', provider=provider)
 
+# Kaggle API setup
 os.environ['KAGGLE_USERNAME'] = 'tonistephens'
 os.environ['KAGGLE_KEY'] = 'ec773fac0d98675bbadcf98e6365d0d3'
 kaggle_api = KaggleApi()
 kaggle_api.authenticate()
-df = pd.read_csv('data/Food_Nutrition.csv')
+
+# Dataset setup
+dataset_dir = 'data'
+dataset_name = 'utsavdey1410/food-nutrition-dataset'
+dl_flag = os.path.exists(f'{dataset_dir}/FINAL FOOD DATASET')
+
+if not dl_flag:
+    os.makedirs(dataset_dir, exist_ok=True)
+    kaggle_api.dataset_download_files(dataset_name, path=dataset_dir, unzip=True)
+
+csv_files = sorted(glob.glob(f"{dataset_dir}/FINAL FOOD DATASET/FOOD-DATA-GROUP*.csv"))
+df_list = [pd.read_csv(file) for file in csv_files]
+df = pd.concat(df_list, ignore_index=True)
 
 # System prompt
 PROMPT = """
