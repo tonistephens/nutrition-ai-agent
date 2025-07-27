@@ -110,6 +110,7 @@ def get_context(user_message: str) -> str:
 agent = Agent(
     model=model,
     system_prompt=PROMPT
+    tools=[search_food_tool]
 )
 
 async def chat():
