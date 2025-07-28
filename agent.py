@@ -5,7 +5,8 @@ import re
 from typing import List, Dict
 from thefuzz import fuzz
 import pandas as pd
-from pydantic_ai import Agent, BaseModel
+from pydantic_ai import Agent
+from pydantic import BaseModel
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel
 from kaggle.api.kaggle_api_extended import KaggleApi
@@ -61,13 +62,20 @@ df = pd.concat(df_list, ignore_index=True)
     
 kb = KnowledgeBase(df)
 
-class SearchFoods(BaseModel):
-    query: str
-
-def search_food_tool(input: SearchFoods) -> List[Dict]:
-    global df
-    kb = KnowledgeBase(df)
-    return kb.search_foods(input.query)
+def macronutrient_tool(food: str) -> Dict:
+    """Find macronutrients of a particular food"""
+    matched_foods = kb.search_foods(food)
+    if matched_foods:
+        top_match = matched_foods[0]  # take the top match
+        return {
+            "found": True,
+            "food": top_match.get("food"),
+            "calories": top_match.get("Caloric Value"),
+            "protein": top_match.get("Protein"),
+            "fat": top_match.get("Fat"),
+            "carbohydrates": top_match.get("Carbohydrates"),
+        }
+    return {"found": False, "message": "Food not found"}
 
 # System prompt
 PROMPT = """
@@ -87,6 +95,8 @@ Core policies to remember:
 - Allergies and dietary restrictions are respected in all suggestions.
 - Emphasise balanced nutrition and variety in meal plans.
 - Provide clear, easy-to-follow meal ideas with brief explanations linking nutrition to mood improvement.
+
+If a user asks about calories or macronutrients of a food, use macronutrient_tool to gather the required information.
 
 Always be patient, supportive, and informative, aiming to empower users toward healthier eating habits that positively impact their mood and lifestyle.
 """
@@ -109,8 +119,8 @@ def get_context(user_message: str) -> str:
 # Create agent
 agent = Agent(
     model=model,
-    system_prompt=PROMPT
-    tools=[search_food_tool]
+    system_prompt=PROMPT,
+    tools=[macronutrient_tool]
 )
 
 async def chat():
