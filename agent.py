@@ -93,6 +93,27 @@ def macronutrient_tool(food: str) -> Dict:
         }
     return {"found": False, "message": "Food not found"}
 
+def micronutrient_tool(food: str) -> Dict:
+    """Find micronutrients of a particular food"""
+    matched_foods = kb.search_foods(food)
+    if matched_foods:
+        # Take top match and extract info
+        top_match = matched_foods[0]
+        vitamins = [v for v in top_match.keys() if v.startswith("Vitamin")]
+        minerals = ["Calcium","Copper","Iron","Magnesium","Manganese","Phosphorus","Potassium","Selenium","Zinc"]
+        response = {
+            "found": True,
+            "food": top_match.get("food"),
+        }
+        # Get value for each vitamin
+        for vitamin in vitamins:
+            response[vitamin.lower().replace(" ","_")] = top_match.get(vitamin)
+        # Get value for each mineral
+        for mineral in minerals:
+            response[mineral.lower().replace(" ","_")] = top_match.get(mineral)
+        return response
+    return {"found": False, "message": "Food not found"}
+
 async def ingredient_tool(ingredients: str) -> Dict:
     """Generate a creative recipe using given ingredients."""
     # Split ingredients list by commas
@@ -172,7 +193,8 @@ Core policies to remember:
 - Respect and accommodate users’ cultural, religious, and ethical food preferences (e.g., halal, vegan, etc.).
 
 Tools usage:
-- If a user asks about calories or macronutrients of a food, use macronutrient_tool to gather the required information.
+- If a user asks about calories or macronutrients, use macronutrient_tool to gather the required information.
+- If a user asks about micronutrients, vitamins, or minerals, use micronutrient_tool to gather the required information.
 - If a user wants you to create a recipe for them given the ingredients they have left in their cupboard, use ingredient_tool to handle this.
 - If a user tells you how they are feeling, use this mood to run mood_tool for food suggestions.
 
@@ -203,6 +225,7 @@ agent = Agent(
     system_prompt=PROMPT,
     tools=[
         macronutrient_tool,
+        micronutrient_tool,
         ingredient_tool,
         mood_tool,
         ]
