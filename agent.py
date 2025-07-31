@@ -9,11 +9,13 @@ from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel
 from kaggle.api.kaggle_api_extended import KaggleApi
 
+GOOGLE_API_KEY = 'AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc'
+
 # Initialise model
-provider = GoogleProvider(api_key='AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc')
+provider = GoogleProvider(api_key=GOOGLE_API_KEY)
 model = GoogleModel(model_name='gemini-1.5-flash', provider=provider)
 
-SET_TOKEN = 80
+SET_TOKEN = 75
 
 def normalise_text(text: str) -> str:
     """Lowercase and remove punctuation"""
@@ -100,7 +102,6 @@ def ingredient_tool(ingredients: str) -> Dict:
             "message": "I couldn’t find enough matching ingredients. Try adding more or check your spelling."
         }
 
-    # Compose a recipe prompt for the LLM
     prompt = f"""
     Create a healthy, flavorful, and easy-to-follow recipe using the following ingredients:
     {', '.join(matched_items)}.
@@ -169,6 +170,7 @@ agent = Agent(
 
 async def chat():
     print("Hello! How can I help you?")
+    history = []
 
     while True:
         user_input = input("\nYou: ")
