@@ -1,16 +1,5 @@
 import gradio as gr
 from agent import agent, get_context
-# from pydantic_ai import Agent
-# from pydantic_ai.models.google import GoogleModel
-# from pydantic_ai.providers.google import GoogleProvider
-
-# --- Hardcoded API Key (Use env vars for production!) ---
-# GOOGLE_API_KEY = 'AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc'
-
-# --- Set up Gemini Agent ---
-# provider = GoogleProvider(api_key=GOOGLE_API_KEY)
-# model = GoogleModel('gemini-2.5-flash',provider=provider)   
-# agent = Agent(model=model)
 
 # --- Chat state ---
 chat_history = []
@@ -40,7 +29,7 @@ async def chat(user_message, history):
 with gr.Blocks(title="Nutrition Agent") as demo:
     gr.Markdown("## 🍌🍊 All A-bot Nutrition 🥑🍗🥦")
     
-    chatbot = gr.Chatbot(type='messages', label="Nutrition Assitant")
+    chatbot = gr.Chatbot(type='messages', label="Nutrition Assitant", elem_id="chatbox")
     msg = gr.Textbox(placeholder="Ask me about nutrition, meals, etc...", label="Your Message")
     clear_btn = gr.Button("Clear Chat")
 
@@ -51,4 +40,3 @@ with gr.Blocks(title="Nutrition Agent") as demo:
 
 # --- Launch the app ---
 demo.queue().launch()
- 
