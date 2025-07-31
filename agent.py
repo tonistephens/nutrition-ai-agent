@@ -8,7 +8,9 @@ from pydantic_ai import Agent
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel
 from kaggle.api.kaggle_api_extended import KaggleApi
+from dotenv import load_dotenv
 
+load_dotenv()
 GOOGLE_API_KEY = 'AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc'
 
 # Initialise model
@@ -42,8 +44,6 @@ class KnowledgeBase:
         return [item[1] for item in results[:5]]
 
 # Kaggle API setup
-os.environ['KAGGLE_USERNAME'] = 'tonistephens'
-os.environ['KAGGLE_KEY'] = 'ec773fac0d98675bbadcf98e6365d0d3'
 kaggle_api = KaggleApi()
 kaggle_api.authenticate()
 
