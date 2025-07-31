@@ -24,6 +24,11 @@ async def chat(user_message, history):
     history.append({"role": "assistant", "content": response})
     return history, history, ""
 
+# --- Greeting message ---
+async def initial_message():
+    greeting = "Hello there!\nI am here to assist you with all of your nutritional needs.\nHow can I help you?"
+    history = [{"role": "assistant", "content": greeting}]
+    return history, history
 
 # --- Gradio UI ---
 with gr.Blocks(title="Nutrition Agent") as demo:
@@ -37,6 +42,8 @@ with gr.Blocks(title="Nutrition Agent") as demo:
 
     msg.submit(chat, inputs=[msg, state], outputs=[chatbot, state, msg])
     clear_btn.click(lambda: ([], [], ""), None, [chatbot, state, msg])
+
+    demo.load(initial_message, inputs=None, outputs=[chatbot, state])
 
 # --- Launch the app ---
 demo.queue().launch()

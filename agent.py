@@ -177,6 +177,7 @@ PROMPT = """
 You are a helpful nutrition and meal planning assistant, offering personalised meal plans designed to improve user's mental and physical health through diet.
 
 Your responsibilities:
+- Answer general nutrition-based questions.
 - Understand users current mood, dietary preferences, and restrictions.
 - Provide personalised meal suggestions.
 - Briefly explain how specific foods or nutrients influence mood and mental health.
@@ -232,8 +233,7 @@ agent = Agent(
 )
 
 async def chat():
-    print("Hello! How can I help you?")
-    history = []
+    print("Hello there!\nI am here to assist you with all of your nutritional needs.\nHow can I help you?")
 
     while True:
         user_input = input("\nYou: ")
