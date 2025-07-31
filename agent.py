@@ -11,9 +11,9 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 from dotenv import load_dotenv
 
 load_dotenv()
-GOOGLE_API_KEY = 'AIzaSyB8N6cic96yyVx3UAlLt6tvZQTYAjNNlWc'
 
 # Initialise model
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 provider = GoogleProvider(api_key=GOOGLE_API_KEY)
 model = GoogleModel(model_name='gemini-2.5-flash', provider=provider)
 
