@@ -33,11 +33,11 @@ def execute_query(sql: str, params: tuple = ()):
             cursor.close()
 
 def handle_get_macros():
-    db_query = "SELECT * FROM macronutrient_tool"
+    db_query = "SELECT ... FROM ..."
     return fetch_query(db_query)
 
 def handle_get_micros():
-    db_query - "SELECT * FROM micronutrient_tool"
+    db_query - "SELECT ... FROM ..."
     return fetch_query(db_query)
 
 @app.get("/")
