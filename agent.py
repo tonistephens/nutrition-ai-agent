@@ -3,7 +3,6 @@ import pandas as pd
 import re
 from typing import List, Dict
 from thefuzz import fuzz
-import pandas as pd
 from pydantic_ai import Agent
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.models.google import GoogleModel
